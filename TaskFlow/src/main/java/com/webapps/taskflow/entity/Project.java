@@ -1,4 +1,4 @@
-package com.webapps.taskflow;
+package com.webapps.taskflow.entity;
 
 import jakarta.persistence.*;
 
