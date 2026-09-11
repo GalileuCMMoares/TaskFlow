@@ -5,6 +5,7 @@ import com.webapps.taskflow.dtos.user.UserResponse;
 import com.webapps.taskflow.entity.User;
 import com.webapps.taskflow.mapper.UserMapper;
 import com.webapps.taskflow.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse create(@RequestBody UserCreateRequest request){
+    public UserResponse create(@Valid @RequestBody UserCreateRequest request){
         User user = UserMapper.toEntity(request);
         return UserMapper.toResponse(userRepository.save(user));
     }

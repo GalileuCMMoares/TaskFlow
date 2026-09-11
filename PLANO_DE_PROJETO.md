@@ -1,7 +1,4 @@
-# Plano de Projeto — Estágio WEBAPPS (Java Full-Stack)
-
-**Estagiário:** [seu nome]
-**Lead:** Joao Paulo Rolim · **Mentores:** Arthur Barbosa, Bruno Yamashita, Thiago Lima
+# Plano de Projeto — Full-Stack Java
 
 ---
 

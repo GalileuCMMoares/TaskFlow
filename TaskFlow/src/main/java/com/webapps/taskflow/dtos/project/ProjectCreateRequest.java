@@ -1,4 +1,8 @@
 package com.webapps.taskflow.dtos.project;
 
-public record ProjectCreateRequest(String name, String description) {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record ProjectCreateRequest(
+        @NotBlank String name,
+        @NotBlank String description
+) { }

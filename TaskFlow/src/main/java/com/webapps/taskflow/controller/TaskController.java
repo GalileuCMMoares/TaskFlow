@@ -9,6 +9,7 @@ import com.webapps.taskflow.mapper.TaskMapper;
 import com.webapps.taskflow.repository.ProjectRepository;
 import com.webapps.taskflow.repository.TaskRepository;
 import com.webapps.taskflow.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +37,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskResponse create(@RequestBody TaskCreateRequest request){
+    public TaskResponse create(@Valid @RequestBody TaskCreateRequest request){
         User assignee = userRepository.findById(request.assigneeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + request.assigneeId()));
         Project project = projectRepository.findById(request.projectId())

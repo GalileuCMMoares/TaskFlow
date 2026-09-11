@@ -5,6 +5,7 @@ import com.webapps.taskflow.dtos.project.ProjectResponse;
 import com.webapps.taskflow.entity.Project;
 import com.webapps.taskflow.mapper.ProjectMapper;
 import com.webapps.taskflow.repository.ProjectRepository;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ProjectResponse create(@RequestBody ProjectCreateRequest request){
+    public ProjectResponse create(@Valid @RequestBody ProjectCreateRequest request){
         Project project = ProjectMapper.toEntity(request);
         return ProjectMapper.toResponse(projectRepository.save(project));
     }

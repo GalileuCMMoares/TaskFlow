@@ -1,4 +1,9 @@
 package com.webapps.taskflow.dtos.user;
 
-public record UserCreateRequest(String name, String email) {
-}
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record UserCreateRequest(
+        @NotBlank String name,
+        @NotBlank @Email String email
+) { }
