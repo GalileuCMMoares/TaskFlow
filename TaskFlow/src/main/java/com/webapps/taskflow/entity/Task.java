@@ -29,6 +29,10 @@ public class Task {
         this.status = status;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
