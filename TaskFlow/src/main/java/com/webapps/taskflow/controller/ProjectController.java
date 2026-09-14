@@ -6,9 +6,9 @@ import com.webapps.taskflow.entity.Project;
 import com.webapps.taskflow.mapper.ProjectMapper;
 import com.webapps.taskflow.repository.ProjectRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
@@ -20,10 +20,9 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectResponse> listAll(){
-        return projectRepository.findAll().stream()
-                .map(ProjectMapper::toResponse)
-                .toList();
+    public Page<ProjectResponse> listAll(Pageable pageable){
+        return projectRepository.findAll(pageable)
+                .map(ProjectMapper::toResponse);
     }
 
     @PostMapping

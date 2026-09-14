@@ -6,9 +6,9 @@ import com.webapps.taskflow.entity.User;
 import com.webapps.taskflow.mapper.UserMapper;
 import com.webapps.taskflow.repository.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -20,10 +20,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> listAll(){
-        return userRepository.findAll().stream()
-                .map(UserMapper::toResponse)
-                .toList();
+    public Page<UserResponse> listAll(Pageable pageable){
+        return userRepository.findAll(pageable)
+                .map(UserMapper::toResponse);
     }
 
     @PostMapping

@@ -10,11 +10,11 @@ import com.webapps.taskflow.repository.ProjectRepository;
 import com.webapps.taskflow.repository.TaskRepository;
 import com.webapps.taskflow.repository.UserRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -30,10 +30,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponse> listAll(){
-        return taskRepository.findAll().stream()
-                .map(TaskMapper::toResponse)
-                .toList();
+    public Page<TaskResponse> listAll(Pageable pageable){
+        return taskRepository.findAll(pageable)
+                .map(TaskMapper::toResponse);
     }
 
     @PostMapping
