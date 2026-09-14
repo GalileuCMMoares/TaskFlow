@@ -8,7 +8,9 @@ import com.webapps.taskflow.repository.ProjectRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/projects")
@@ -29,5 +31,13 @@ public class ProjectController {
     public ProjectResponse create(@Valid @RequestBody ProjectCreateRequest request){
         Project project = ProjectMapper.toEntity(request);
         return ProjectMapper.toResponse(projectRepository.save(project));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found: " + id));
+        project.softDelete();
+        projectRepository.save(project);
     }
 }

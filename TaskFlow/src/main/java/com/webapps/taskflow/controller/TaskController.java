@@ -45,4 +45,12 @@ public class TaskController {
         Task task = TaskMapper.toEntity(request, assignee, project);
         return TaskMapper.toResponse(taskRepository.save(task));
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: " + id));
+        task.softDelete();
+        taskRepository.save(task);
+    }
 }

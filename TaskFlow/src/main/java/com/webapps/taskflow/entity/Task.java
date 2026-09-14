@@ -1,8 +1,12 @@
 package com.webapps.taskflow.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @Entity
+@SQLRestriction("deleted_at IS NULL")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +24,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    private LocalDateTime deletedAt;
 
     protected Task() {}
 
@@ -49,6 +55,10 @@ public class Task {
         return project;
     }
 
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -63,5 +73,9 @@ public class Task {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
