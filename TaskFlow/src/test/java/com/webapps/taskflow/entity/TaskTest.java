@@ -1,0 +1,26 @@
+package com.webapps.taskflow.entity;
+
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TaskTest {
+
+    @Test
+    void softDeleteSetsDeletedAt() {
+        User assignee = new User("ana@taskflow.dev", "Ana Souza");
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+
+        task.softDelete();
+
+        assertThat(task.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    void newTaskHasNoProjectUntilAddedToOne() {
+        User assignee = new User("ana@taskflow.dev", "Ana Souza");
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+
+        assertThat(task.getProject()).isNull();
+    }
+}
