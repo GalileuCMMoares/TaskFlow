@@ -7,7 +7,11 @@ Gerenciador de tarefas de equipe — projeto full-stack para praticar Java/Sprin
 - **Java 21** (Eclipse Temurin)
 - **Spring Boot 3.4.1** (Web, Data JPA, Validation)
 - **PostgreSQL 16**
+- **Flyway** (migrations versionadas)
+- **Lombok**
 - **Maven**
+- **Docker** (Dockerfile multi-stage + docker-compose)
+- JUnit 5 + AssertJ
 
 ## Domínio
 
@@ -21,40 +25,52 @@ Três entidades com relacionamento entre elas:
 
 ```
 com.webapps.taskflow
-├── entity/      → User, Project, Task, Status (enum) — mapeamento JPA
+├── entity/      → User, Project, Task, Status (enum) — mapeamento JPA + Lombok
 ├── repository/  → Spring Data JPA repositories
-├── dtos/        → Request/Response records por entidade (contrato da API)
+├── dtos/        → CreateRequest/UpdateRequest/Response records por entidade, com Bean Validation
 ├── mapper/      → conversão entidade ↔ DTO
 └── controller/  → REST controllers
 ```
 
-A API não expõe as entidades JPA diretamente — todo `GET`/`POST` passa por DTOs (`record` do Java), desacoplando o contrato da API do modelo de persistência.
+A API não expõe as entidades JPA diretamente — todo `GET`/`POST`/`PUT`/`DELETE` passa por DTOs (`record` do Java), desacoplando o contrato da API do modelo de persistência.
 
 ## Endpoints atuais
 
-| Método | Rota        | Descrição                              |
-|--------|-------------|-----------------------------------------|
-| GET    | `/users`    | Lista usuários                          |
-| POST   | `/users`    | Cria usuário                            |
-| GET    | `/projects` | Lista projetos                          |
-| POST   | `/projects` | Cria projeto                            |
-| GET    | `/tasks`    | Lista tarefas                           |
-| POST   | `/tasks`    | Cria tarefa (referencia `assigneeId`/`projectId` já existentes) |
+Nos 3 recursos (`/users`, `/projects`, `/tasks`):
 
-Requisições de criação passam por Bean Validation (`@Valid`); referência a `User`/`Project` inexistente retorna `404`.
+| Método | Rota        | Descrição                                                   |
+|--------|-------------|---------------------------------------------------------------|
+| GET    | `/{recurso}`      | Lista paginada (`?page=&size=&sort=`)                    |
+| POST   | `/{recurso}`      | Cria (Bean Validation, `404` se referência não existir)  |
+| PUT    | `/{recurso}/{id}` | Atualiza (Bean Validation, `404` se não existir)         |
+| DELETE | `/{recurso}/{id}` | Soft delete (`404` se já excluído/inexistente)           |
+
+`DELETE /projects/{id}` cascateia soft delete pras tasks do projeto.
 
 ## Rodando localmente
 
+### Via Docker (recomendado)
+
+```
+docker compose up --build
+```
+
+Sobe a API (`localhost:8080`) e o Postgres juntos; o Flyway aplica as migrations automaticamente.
+
+### Direto na IDE
+
 1. PostgreSQL rodando localmente, banco `taskflow` criado.
 2. Ajustar `TaskFlow/src/main/resources/application.properties` com usuário/senha do banco, se necessário.
-3. Rodar `TaskFlowApplication` (Java 21) — sobe em `http://localhost:8080`.
+3. Rodar `TaskFlowApplication` (Java 21, precisa do plugin Lombok + annotation processing habilitados na IDE) — sobe em `http://localhost:8080`.
 
 ## Status / próximos passos
 
 - [x] Modelagem do domínio + persistência via JPA/Hibernate
-- [x] API REST (`GET`/`POST`) com DTOs e mappers
-- [x] Bean Validation nas requisições de criação
-- [ ] Paginação nas listagens
-- [ ] Soft delete
-- [ ] Dockerfile + docker-compose (app + banco)
+- [x] API REST (`GET`/`POST`/`PUT`/`DELETE`) com DTOs e mappers
+- [x] Bean Validation
+- [x] Paginação nas listagens
+- [x] Soft delete (com cascata Project → Task)
+- [x] Migrations versionadas com Flyway
+- [x] Testes unitários (entidades e mappers)
+- [x] Dockerfile + docker-compose (app + banco)
 - [ ] Front-end React + TypeScript consumindo a API
