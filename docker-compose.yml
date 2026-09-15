@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: taskflow
+      POSTGRES_USER: gcmm
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - taskflow-db-data:/var/lib/postgresql/data
+
+  app:
+    build: ./TaskFlow
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskflow
+    depends_on:
+      - db
+
+volumes:
+  taskflow-db-data:
