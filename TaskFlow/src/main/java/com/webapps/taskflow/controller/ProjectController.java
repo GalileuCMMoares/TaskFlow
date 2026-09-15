@@ -2,6 +2,7 @@ package com.webapps.taskflow.controller;
 
 import com.webapps.taskflow.dtos.project.ProjectCreateRequest;
 import com.webapps.taskflow.dtos.project.ProjectResponse;
+import com.webapps.taskflow.dtos.project.ProjectUpdateRequest;
 import com.webapps.taskflow.entity.Project;
 import com.webapps.taskflow.mapper.ProjectMapper;
 import com.webapps.taskflow.repository.ProjectRepository;
@@ -39,5 +40,13 @@ public class ProjectController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found: " + id));
         project.softDelete();
         projectRepository.save(project);
+    }
+
+    @PutMapping("/{id}")
+    public ProjectResponse update(@PathVariable Long id, @Valid @RequestBody ProjectUpdateRequest request) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found: " + id));
+        ProjectMapper.applyUpdate(request, project);
+        return ProjectMapper.toResponse(projectRepository.save(project));
     }
 }

@@ -2,6 +2,7 @@ package com.webapps.taskflow.controller;
 
 import com.webapps.taskflow.dtos.user.UserCreateRequest;
 import com.webapps.taskflow.dtos.user.UserResponse;
+import com.webapps.taskflow.dtos.user.UserUpdateRequest;
 import com.webapps.taskflow.entity.User;
 import com.webapps.taskflow.mapper.UserMapper;
 import com.webapps.taskflow.repository.UserRepository;
@@ -39,5 +40,13 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
         user.softDelete();
         userRepository.save(user);
+    }
+
+    @PutMapping("/{id}")
+    public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + id));
+        UserMapper.applyUpdate(request, user);
+        return UserMapper.toResponse(userRepository.save(user));
     }
 }

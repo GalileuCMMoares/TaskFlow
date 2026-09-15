@@ -2,6 +2,7 @@ package com.webapps.taskflow.controller;
 
 import com.webapps.taskflow.dtos.task.TaskCreateRequest;
 import com.webapps.taskflow.dtos.task.TaskResponse;
+import com.webapps.taskflow.dtos.task.TaskUpdateRequest;
 import com.webapps.taskflow.entity.Project;
 import com.webapps.taskflow.entity.Task;
 import com.webapps.taskflow.entity.User;
@@ -52,5 +53,18 @@ public class TaskController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: " + id));
         task.softDelete();
         taskRepository.save(task);
+    }
+
+    @PutMapping("/{id}")
+    public TaskResponse update(@PathVariable Long id, @Valid @RequestBody TaskUpdateRequest request) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found: " + id));
+        User assignee = userRepository.findById(request.assigneeId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + request.assigneeId()));
+        Project project = projectRepository.findById(request.projectId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found: " + request.projectId()));
+
+        TaskMapper.applyUpdate(request, task, assignee, project);
+        return TaskMapper.toResponse(taskRepository.save(task));
     }
 }
