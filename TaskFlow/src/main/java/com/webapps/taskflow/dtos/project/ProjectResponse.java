@@ -1,4 +1,4 @@
 package com.webapps.taskflow.dtos.project;
 
-public record ProjectResponse(Long id, String name, String description) {
+public record ProjectResponse(Long id, String key, String name, String description) {
 }

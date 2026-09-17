@@ -20,24 +20,35 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String key;
+
     @Setter
     private String name;
     @Setter
     private String description;
     private LocalDateTime deletedAt;
+    private int nextTaskNumber;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
-    public Project(String name, String description) {
+    public Project(String key, String name, String description) {
+        this.key = key;
         this.name = name;
         this.description = description;
+        this.nextTaskNumber = 1;
         this.tasks = new ArrayList<>();
     }
 
     public void addTask(Task task) {
         tasks.add(task);
         task.setProject(this);
+    }
+
+    public String nextTaskKey() {
+        String taskKey = key + "-" + nextTaskNumber;
+        nextTaskNumber++;
+        return taskKey;
     }
 
     public void softDelete() {

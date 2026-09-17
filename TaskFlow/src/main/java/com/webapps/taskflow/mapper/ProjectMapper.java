@@ -10,12 +10,13 @@ public final class ProjectMapper {
     private ProjectMapper() {}
 
     public static Project toEntity(ProjectCreateRequest request) {
-        return new Project(request.name(), request.description());
+        return new Project(request.key().toUpperCase(), request.name(), request.description());
     }
 
     public static ProjectResponse toResponse(Project project) {
         return new ProjectResponse(
                 project.getId(),
+                project.getKey(),
                 project.getName(),
                 project.getDescription()
         );

@@ -9,7 +9,7 @@ class TaskTest {
     @Test
     void softDeleteSetsDeletedAt() {
         User assignee = new User("ana@taskflow.dev", "Ana Souza");
-        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING, Priority.MEDIUM);
 
         task.softDelete();
 
@@ -19,8 +19,20 @@ class TaskTest {
     @Test
     void newTaskHasNoProjectUntilAddedToOne() {
         User assignee = new User("ana@taskflow.dev", "Ana Souza");
-        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING, Priority.MEDIUM);
 
         assertThat(task.getProject()).isNull();
+    }
+
+    @Test
+    void newTaskHasNoKeyUntilAssigned() {
+        User assignee = new User("ana@taskflow.dev", "Ana Souza");
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING, Priority.MEDIUM);
+
+        assertThat(task.getKey()).isNull();
+
+        task.assignKey("WEB-1");
+
+        assertThat(task.getKey()).isEqualTo("WEB-1");
     }
 }

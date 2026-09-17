@@ -8,9 +8,9 @@ class ProjectTest {
 
     @Test
     void addTaskSynchronizesBothSides() {
-        Project project = new Project("Website Redesign", "Redesign da landing page");
+        Project project = new Project("WEB", "Website Redesign", "Redesign da landing page");
         User assignee = new User("ana@taskflow.dev", "Ana Souza");
-        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING, Priority.MEDIUM);
 
         project.addTask(task);
 
@@ -20,14 +20,22 @@ class ProjectTest {
 
     @Test
     void softDeleteCascadesToTasks() {
-        Project project = new Project("Website Redesign", "Redesign da landing page");
+        Project project = new Project("WEB", "Website Redesign", "Redesign da landing page");
         User assignee = new User("ana@taskflow.dev", "Ana Souza");
-        Task task = new Task("Criar wireframe", assignee, Status.PENDING);
+        Task task = new Task("Criar wireframe", assignee, Status.PENDING, Priority.MEDIUM);
         project.addTask(task);
 
         project.softDelete();
 
         assertThat(project.getDeletedAt()).isNotNull();
         assertThat(task.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    void nextTaskKeyIncrementsSequentially() {
+        Project project = new Project("WEB", "Website Redesign", "Redesign da landing page");
+
+        assertThat(project.nextTaskKey()).isEqualTo("WEB-1");
+        assertThat(project.nextTaskKey()).isEqualTo("WEB-2");
     }
 }
