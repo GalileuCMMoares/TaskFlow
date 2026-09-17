@@ -30,3 +30,21 @@
   margin: 40px auto;
   text-align: left;
 }
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 280px;
+  margin: 80px auto;
+}
+
+.login-form input,
+.login-form button {
+  padding: 8px 12px;
+}
+
+.login-form .error {
+  color: #c0392b;
+  margin: 0;
+}
