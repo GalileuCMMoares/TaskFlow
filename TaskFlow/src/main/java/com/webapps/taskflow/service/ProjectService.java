@@ -27,6 +27,11 @@ public class ProjectService {
                 .map(ProjectMapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
+    public ProjectResponse findById(Long id) {
+        return ProjectMapper.toResponse(findByIdOrThrow(id));
+    }
+
     @Transactional
     public ProjectResponse create(ProjectCreateRequest request) {
         Project project = ProjectMapper.toEntity(request);

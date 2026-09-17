@@ -23,6 +23,11 @@ public class ProjectController {
         return projectService.listAll(pageable);
     }
 
+    @GetMapping("/{id}")
+    public ProjectResponse findById(@PathVariable Long id) {
+        return projectService.findById(id);
+    }
+
     @PostMapping
     public ProjectResponse create(@Valid @RequestBody ProjectCreateRequest request){
         return projectService.create(request);
