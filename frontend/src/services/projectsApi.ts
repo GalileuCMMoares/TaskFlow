@@ -1,13 +1,12 @@
 import type { Project } from "../types/Project";
-
-const API_BASE_URL = "http://localhost:8080";
+import { apiFetch } from "./api";
 
 interface Page<T> {
   content: T[];
 }
 
 export async function fetchProjects(): Promise<Project[]> {
-  const response = await fetch(`${API_BASE_URL}/projects`);
+  const response = await apiFetch("/projects");
   if (!response.ok) {
     throw new Error(`Failed to fetch projects: ${response.status}`);
   }
@@ -16,7 +15,7 @@ export async function fetchProjects(): Promise<Project[]> {
 }
 
 export async function fetchProjectById(id: string): Promise<Project> {
-  const response = await fetch(`${API_BASE_URL}/projects/${id}`);
+  const response = await apiFetch(`/projects/${id}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch project ${id}: ${response.status}`);
   }

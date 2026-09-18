@@ -1,8 +1,25 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated } from "../services/auth";
+import type { User } from "firebase/auth";
+import { onAuthChange } from "../services/auth";
 
 function ProtectedRoute() {
-  if (!isAuthenticated()) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthChange((currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  if (loading) {
+    return <p>Carregando...</p>;
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

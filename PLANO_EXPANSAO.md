@@ -6,31 +6,32 @@ Continuação do projeto original ([`PLANO_DE_PROJETO.md`](./PLANO_DE_PROJETO.md
 
 **Nível de "pronto pra produção":** projeto pessoal publicado publicamente — single-tenant (um workspace só, sem isolamento multi-cliente/billing). O objetivo é ter algo real rodando na internet, não construir um produto SaaS multi-usuário completo.
 
-## Novo domínio
+## Novo domínio ✅ concluído
 
 Mudanças nas entidades existentes + uma nova:
 
-- **`Task`** ganha:
-  - `key` (`String`, ex.: `TASKFLOW-1`) — identificador legível, gerado sequencialmente por projeto.
+- **`Task`** ganhou:
+  - `key` (`String`, ex.: `WEB-1`) — identificador legível, gerado sequencialmente por projeto.
   - `priority` (enum: `LOW`, `MEDIUM`, `HIGH`, `URGENT`).
-  - `labels` (coleção de strings, `@ElementCollection` — mais simples que uma entidade `Label` separada pra esse escopo).
-- **`Project`** ganha um contador interno (`nextTaskNumber` ou equivalente) pra gerar o `key` das tasks de forma sequencial e seguro contra concorrência (não pode ser só `tasks.size() + 1` — colide se duas tasks forem criadas ao mesmo tempo).
-- **`User`** ganha campos pra login via Google (`googleId` ou `email` como identificador de login) — sem campo de senha, ver seção de autenticação abaixo.
-- **`Comment`** (nova entidade): `id`, `content`, `author` (`User`, `@ManyToOne`), `task` (`Task`, `@ManyToOne`), `createdAt`. Segue o mesmo padrão já estabelecido (entidade → DTO → mapper → service → controller).
+  - `labels` (coleção de strings, `@ElementCollection`).
+- **`Project`** ganhou `key` (definido na criação, imutável) e um contador interno (`nextTaskNumber`) pra gerar o `key` das tasks de forma sequencial — encapsulado no método de domínio `nextTaskKey()`.
+- **`Comment`** (entidade nova): `id`, `content`, `author` (`User`), `task` (`Task`), `createdAt`. Relação **unidirecional** com `Task`/`User` (não precisa navegar de volta). Endpoints em `/tasks/{taskId}/comments`.
 
-## Autenticação — login com Google, sessão com JWT próprio
+Migration feita sem quebrar dado existente (técnica expand → backfill → contract).
 
-Simplificação importante: em vez de dois sistemas de auth em paralelo (senha própria + Google), a ideia é **um fluxo só**:
+## Autenticação — login com Google via Firebase ✅ concluído
 
-1. Front-end usa "Sign in with Google" (OAuth2) pra provar a identidade do usuário.
-2. Backend recebe esse identity token, valida com o Google, encontra ou cria o `User` correspondente (por e-mail).
-3. Backend emite **seu próprio JWT**, que o front usa nas chamadas subsequentes à API (substituindo o mock de `localStorage` atual).
+Mudança em relação ao desenho original deste plano: em vez de configurar OAuth2 "cru" no Google Cloud Console (`spring-boot-starter-oauth2-client` + JWT próprio), fomos de **Firebase Authentication** — o Google Cloud Console pediu configuração de faturamento que o Firebase (plano gratuito Spark) não exige pra esse uso.
 
-Isso evita ter que implementar cadastro de senha, hash, fluxo de "esqueci minha senha", etc. — menos código, mais seguro, e ainda cobre os dois itens do plano (`Spring Security + JWT` e `login Google`) porque são a mesma peça, não duas.
+Como ficou:
+1. Front-end usa o SDK do Firebase (`signInWithPopup` + `GoogleAuthProvider`) — todo o fluxo OAuth2 com o Google é resolvido no navegador, sem o back-end precisar lidar com redirect URIs.
+2. Front-end manda o **ID token do Firebase** em toda chamada (`Authorization: Bearer <token>`).
+3. Back-end verifica esse token com o **Firebase Admin SDK** (`FirebaseAuth.verifyIdToken`) — sem emitir JWT próprio, o token do Firebase já cobre esse papel.
+4. `User` local é criado automaticamente no primeiro login, por e-mail (com `UNIQUE` constraint garantindo consistência).
 
-No backend: `spring-boot-starter-oauth2-client` + `spring-boot-starter-security`, endpoint de callback do Google, filtro JWT pras rotas protegidas (substituindo o `ProtectedRoute` mockado do front, que vira real).
+`SecurityConfig` exige autenticação em toda rota (`anyRequest().authenticated()`), com CORS configurado direto na cadeia de segurança (pegadinha real: o preflight `OPTIONS` precisa ficar liberado sem autenticação, senão o navegador bloqueia toda chamada com header customizado).
 
-**Credenciais do Google OAuth (client id/secret) nunca vão pro repositório** — variáveis de ambiente, consistente com a regra já estabelecida de repo público sem segredo nenhum versionado.
+Credenciais (arquivo `.json` da service account do Firebase) guardadas fora do repositório, nunca commitadas.
 
 ## Board Kanban
 
@@ -47,10 +48,10 @@ Trabalho de infra necessário:
 
 ## Ordem sugerida de implementação
 
-1. **Expandir o domínio**: `Comment` (entidade + DTO + mapper + service + controller + testes), `Task.priority`/`labels`, `key` sequencial por projeto.
-2. **Autenticação real**: Google OAuth2 + JWT próprio, substituindo o mock (`services/auth.ts` do front, `ProtectedRoute`).
+1. ~~**Expandir o domínio**: `Comment` (entidade + DTO + mapper + service + controller + testes), `Task.priority`/`labels`, `key` sequencial por projeto.~~ ✅
+2. ~~**Autenticação real**: login com Google via Firebase, substituindo o mock (`services/auth.ts` do front, `ProtectedRoute`).~~ ✅
 3. **Board Kanban** no front (sem drag-and-drop ainda).
-4. **UI de comentários** na tela de detalhe da task, exibição do `key` (`TASKFLOW-1`) em vez do `id` cru.
+4. **UI de comentários** na tela de detalhe da task, exibição do `key` (`WEB-1`) em vez do `id` cru.
 5. **Deploy**: escolher a plataforma, configurar env vars/segredos, publicar back e front, testar de ponta a ponta em produção.
 6. *(Opcional, depois de tudo funcionando)* drag-and-drop no board.
 

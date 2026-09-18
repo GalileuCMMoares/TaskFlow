@@ -7,8 +7,8 @@ function ProjectsPage() {
   const { projects, loading, error } = useProjects();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     navigate("/login");
   }
 
