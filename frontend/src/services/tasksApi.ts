@@ -13,3 +13,11 @@ export async function fetchTasks(): Promise<Task[]> {
   const page: Page<Task> = await response.json();
   return page.content;
 }
+
+export async function fetchTaskById(id: string): Promise<Task> {
+  const response = await apiFetch(`/tasks/${id}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch task ${id}: ${response.status}`);
+  }
+  return response.json();
+}

@@ -3,10 +3,13 @@ package com.webapps.taskflow.controller;
 import com.webapps.taskflow.dtos.user.UserCreateRequest;
 import com.webapps.taskflow.dtos.user.UserResponse;
 import com.webapps.taskflow.dtos.user.UserUpdateRequest;
+import com.webapps.taskflow.entity.User;
+import com.webapps.taskflow.mapper.UserMapper;
 import com.webapps.taskflow.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +24,12 @@ public class UserController {
     @GetMapping
     public Page<UserResponse> listAll(Pageable pageable){
         return userService.listAll(pageable);
+    }
+
+    @GetMapping("/me")
+    public UserResponse me() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return UserMapper.toResponse(user);
     }
 
     @PostMapping

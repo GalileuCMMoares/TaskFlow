@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Task } from "../types/Task";
 
 interface TaskCardProps {
@@ -6,14 +7,14 @@ interface TaskCardProps {
 
 function TaskCard({ task }: TaskCardProps) {
   return (
-    <div className="task-card">
+    <Link to={`/tasks/${task.id}`} className="task-card">
       <span className="task-key">{task.key}</span>
       <h4>{task.name}</h4>
       <p className="task-assignee">{task.assignee.name}</p>
       <span className={`priority-tag priority-${task.priority.toLowerCase()}`}>
         {task.priority}
       </span>
-    </div>
+    </Link>
   );
 }
 

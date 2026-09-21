@@ -35,6 +35,11 @@ public class TaskService {
                 .map(TaskMapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
+    public TaskResponse findById(Long id) {
+        return TaskMapper.toResponse(findByIdOrThrow(id));
+    }
+
     @Transactional
     public TaskResponse create(TaskCreateRequest request) {
         User assignee = findUserOrThrow(request.assigneeId());

@@ -23,6 +23,11 @@ public class TaskController {
         return taskService.listAll(pageable);
     }
 
+    @GetMapping("/{id}")
+    public TaskResponse findById(@PathVariable Long id) {
+        return taskService.findById(id);
+    }
+
     @PostMapping
     public TaskResponse create(@Valid @RequestBody TaskCreateRequest request){
         return taskService.create(request);

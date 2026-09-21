@@ -31,6 +31,39 @@
   text-align: left;
 }
 
+.task-detail {
+  max-width: 480px;
+  margin: 40px auto;
+  text-align: left;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.comment p {
+  margin: 4px 0 0;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comment-form textarea {
+  padding: 8px;
+  font-family: inherit;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
