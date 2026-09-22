@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Project } from "../types/Project";
 import { fetchProjects } from "../services/projectsApi";
 
 interface UseProjectsResult {
   projects: Project[];
+  setProjects: Dispatch<SetStateAction<Project[]>>;
   loading: boolean;
   error: string | null;
 }
@@ -20,5 +22,5 @@ export function useProjects(): UseProjectsResult {
       .finally(() => setLoading(false));
   }, []);
 
-  return { projects, loading, error };
+  return { projects, setProjects, loading, error };
 }

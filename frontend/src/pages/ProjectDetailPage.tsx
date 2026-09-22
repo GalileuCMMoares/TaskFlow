@@ -15,7 +15,9 @@ function ProjectDetailPage() {
 
   return (
     <div className="project-detail">
-      <Link to="/">← Voltar</Link>
+      <Link to="/" className="back-link">
+        ← Voltar
+      </Link>
       <h2>{project.name}</h2>
       <p>{project.description}</p>
     </div>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import type { Task } from "../types/Task";
 import { fetchTasks } from "../services/tasksApi";
 
 interface UseTasksResult {
   tasks: Task[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
   loading: boolean;
   error: string | null;
 }
@@ -20,5 +22,5 @@ export function useTasks(): UseTasksResult {
       .finally(() => setLoading(false));
   }, []);
 
-  return { tasks, loading, error };
+  return { tasks, setTasks, loading, error };
 }

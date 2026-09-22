@@ -8,6 +8,7 @@ interface ProjectCardProps {
 function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link to={`/projects/${project.id}`} className="project-card">
+      <span className="task-key">{project.key}</span>
       <h3>{project.name}</h3>
       <p>{project.description}</p>
     </Link>

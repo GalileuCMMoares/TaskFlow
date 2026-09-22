@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTask } from "../hooks/useTask";
+import { STATUS_LABELS } from "../types/Task";
 import type { Comment } from "../types/Comment";
 import { createComment, fetchComments } from "../services/commentsApi";
 import { fetchCurrentUser } from "../services/usersApi";
@@ -42,11 +43,17 @@ function TaskDetailPage() {
 
   return (
     <div className="task-detail">
+      <Link to="/board" className="back-link">
+        ← Voltar
+      </Link>
       <span className="task-key">{task.key}</span>
       <h2>{task.name}</h2>
       <p>Responsável: {task.assignee.name}</p>
       <p>
-        Status: {task.status} · Prioridade: {task.priority}
+        <span className="status-tag">{STATUS_LABELS[task.status]}</span>{" "}
+        <span className={`priority-tag priority-${task.priority.toLowerCase()}`}>
+          {task.priority}
+        </span>
       </p>
       {task.labels.length > 0 && <p>Labels: {task.labels.join(", ")}</p>}
 

@@ -7,7 +7,12 @@ interface TaskCardProps {
 
 function TaskCard({ task }: TaskCardProps) {
   return (
-    <Link to={`/tasks/${task.id}`} className="task-card">
+    <Link
+      to={`/tasks/${task.id}`}
+      className="task-card"
+      draggable
+      onDragStart={(event) => event.dataTransfer.setData("text/plain", String(task.id))}
+    >
       <span className="task-key">{task.key}</span>
       <h4>{task.name}</h4>
       <p className="task-assignee">{task.assignee.name}</p>

@@ -21,3 +21,15 @@ export async function fetchProjectById(id: string): Promise<Project> {
   }
   return response.json();
 }
+
+export async function createProject(key: string, name: string, description: string): Promise<Project> {
+  const response = await apiFetch("/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key, name, description }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to create project: ${response.status}`);
+  }
+  return response.json();
+}

@@ -1,8 +1,9 @@
 import ProjectCard from "../components/ProjectCard";
+import CreateProjectForm from "../components/CreateProjectForm";
 import { useProjects } from "../hooks/useProjects";
 
 function ProjectsPage() {
-  const { projects, loading, error } = useProjects();
+  const { projects, setProjects, loading, error } = useProjects();
 
   if (loading) {
     return <p>Carregando...</p>;
@@ -14,6 +15,7 @@ function ProjectsPage() {
 
   return (
     <div className="project-list">
+      <CreateProjectForm onCreated={(project) => setProjects((previous) => [...previous, project])} />
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}

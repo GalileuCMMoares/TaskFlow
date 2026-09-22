@@ -114,6 +114,11 @@
   border-radius: 8px;
   padding: 12px;
   min-height: 200px;
+  transition: background 0.15s ease;
+}
+
+.board-column.drag-over {
+  background: #e3f2fd;
 }
 
 .board-column h3 {
@@ -124,12 +129,15 @@
 }
 
 .task-card {
+  display: block;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
   text-align: left;
+  text-decoration: none;
+  color: inherit;
 }
 
 .task-card h4 {
@@ -173,4 +181,47 @@
 .priority-urgent {
   background: #ffebee;
   color: #c62828;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.status-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.create-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 900px;
+  margin: 40px auto 16px;
+  align-items: flex-start;
+}
+
+.create-form input,
+.create-form select,
+.create-form button {
+  padding: 8px 10px;
+}
+
+.create-form .error {
+  color: #c0392b;
+  margin: 0;
+  width: 100%;
 }
