@@ -1,33 +1,31 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useProjects } from "../hooks/useProjects";
 import { useUsers } from "../hooks/useUsers";
 import { createTask } from "../services/tasksApi";
 import type { Priority, Task } from "../types/Task";
 
 interface CreateTaskFormProps {
+  projectId: number;
   onCreated: (task: Task) => void;
 }
 
 const PRIORITIES: Priority[] = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 
-function CreateTaskForm({ onCreated }: CreateTaskFormProps) {
-  const { projects } = useProjects();
+function CreateTaskForm({ projectId, onCreated }: CreateTaskFormProps) {
   const { users } = useUsers();
   const [name, setName] = useState("");
-  const [projectId, setProjectId] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
   const [priority, setPriority] = useState<Priority>("MEDIUM");
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!projectId || !assigneeId) {
-      setError("Escolha um projeto e um responsável.");
+    if (!assigneeId) {
+      setError("Escolha um responsável.");
       return;
     }
     try {
-      const task = await createTask(name, Number(assigneeId), priority, Number(projectId));
+      const task = await createTask(name, Number(assigneeId), priority, projectId);
       onCreated(task);
       setName("");
       setError(null);
@@ -43,14 +41,6 @@ function CreateTaskForm({ onCreated }: CreateTaskFormProps) {
         onChange={(event) => setName(event.target.value)}
         placeholder="Nome da task"
       />
-      <select value={projectId} onChange={(event) => setProjectId(event.target.value)}>
-        <option value="">Projeto...</option>
-        {projects.map((project) => (
-          <option key={project.id} value={project.id}>
-            {project.key} — {project.name}
-          </option>
-        ))}
-      </select>
       <select value={assigneeId} onChange={(event) => setAssigneeId(event.target.value)}>
         <option value="">Responsável...</option>
         {users.map((user) => (

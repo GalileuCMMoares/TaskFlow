@@ -36,6 +36,13 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
+    public Page<TaskResponse> listByProject(Long projectId, Pageable pageable) {
+        findProjectOrThrow(projectId);
+        return taskRepository.findByProjectId(projectId, pageable)
+                .map(TaskMapper::toResponse);
+    }
+
+    @Transactional(readOnly = true)
     public TaskResponse findById(Long id) {
         return TaskMapper.toResponse(findByIdOrThrow(id));
     }

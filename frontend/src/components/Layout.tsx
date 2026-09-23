@@ -13,7 +13,6 @@ function Layout() {
     <div>
       <nav className="navbar">
         <Link to="/">Projetos</Link>
-        <Link to="/board">Board</Link>
         <button type="button" onClick={handleLogout}>
           Sair
         </button>

@@ -5,8 +5,8 @@ interface Page<T> {
   content: T[];
 }
 
-export async function fetchTasks(): Promise<Task[]> {
-  const response = await apiFetch("/tasks?size=100");
+export async function fetchTasksByProject(projectId: string): Promise<Task[]> {
+  const response = await apiFetch(`/projects/${projectId}/tasks?size=100`);
   if (!response.ok) {
     throw new Error(`Failed to fetch tasks: ${response.status}`);
   }

@@ -1,16 +1,20 @@
 import { useState } from "react";
 import type { DragEvent } from "react";
-import { useTasks } from "../hooks/useTasks";
+import { useProjectTasks } from "../hooks/useProjectTasks";
 import { updateTaskStatus } from "../services/tasksApi";
-import TaskCard from "../components/TaskCard";
-import CreateTaskForm from "../components/CreateTaskForm";
+import TaskCard from "./TaskCard";
+import CreateTaskForm from "./CreateTaskForm";
 import type { Status } from "../types/Task";
 import { STATUS_LABELS } from "../types/Task";
 
 const STATUSES: Status[] = ["PENDING", "IN_PROGRESS", "DONE"];
 
-function BoardPage() {
-  const { tasks, setTasks, loading, error } = useTasks();
+interface ProjectBoardProps {
+  projectId: string;
+}
+
+function ProjectBoard({ projectId }: ProjectBoardProps) {
+  const { tasks, setTasks, loading, error } = useProjectTasks(projectId);
   const [dragOverStatus, setDragOverStatus] = useState<Status | null>(null);
 
   async function handleDrop(event: DragEvent<HTMLDivElement>, status: Status) {
@@ -28,7 +32,7 @@ function BoardPage() {
   }
 
   if (loading) {
-    return <p>Carregando...</p>;
+    return <p>Carregando board...</p>;
   }
 
   if (error) {
@@ -37,7 +41,10 @@ function BoardPage() {
 
   return (
     <div>
-      <CreateTaskForm onCreated={(task) => setTasks((previous) => [...previous, task])} />
+      <CreateTaskForm
+        projectId={Number(projectId)}
+        onCreated={(task) => setTasks((previous) => [...previous, task])}
+      />
       <div className="board">
         {STATUSES.map((status) => (
           <div
@@ -63,4 +70,4 @@ function BoardPage() {
   );
 }
 
-export default BoardPage;
+export default ProjectBoard;

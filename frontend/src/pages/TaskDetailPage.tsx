@@ -43,7 +43,7 @@ function TaskDetailPage() {
 
   return (
     <div className="task-detail">
-      <Link to="/board" className="back-link">
+      <Link to={`/projects/${task.projectId}`} className="back-link">
         ← Voltar
       </Link>
       <span className="task-key">{task.key}</span>
